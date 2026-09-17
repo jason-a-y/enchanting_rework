@@ -2,10 +2,7 @@ package net.cree_per_.enchanting_rework;
 
 import net.cree_per_.enchanting_rework.block.ModBlocks;
 import net.cree_per_.enchanting_rework.recipe.ModRecipes;
-import net.cree_per_.enchanting_rework.util.ModLootTableModifiers;
 import net.fabricmc.api.ModInitializer;
-
-import net.minecraft.util.Identifier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +23,5 @@ public class EnchantingRework implements ModInitializer {
 
 		ModBlocks.registerModBlocks();
 		ModRecipes.registerRecipes();
-
-		ModLootTableModifiers.modifyLootTables();
 	}
 }
