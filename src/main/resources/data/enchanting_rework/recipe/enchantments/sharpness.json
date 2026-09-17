@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:glowstone_dust"
+  },
+  "lapis": [1,2,2,3,3],
+  "ingredient_cost": [1,2,2,3,3],
+  "result": "minecraft:sharpness",
+  "bookshelves": [0,2,4,7,10]
+}

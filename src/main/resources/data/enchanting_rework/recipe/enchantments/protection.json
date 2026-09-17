@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:iron_ingot"
+  },
+  "lapis": [1,2,2,3],
+  "ingredient_cost": [1,2,2,3],
+  "result": "minecraft:protection",
+  "bookshelves": [1,4,8,12]
+}

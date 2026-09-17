@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "enchanting_rework",
+	"version": "${version}",
+	"name": "Enchanting Rework",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/enchanting_rework/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.cree_per_.enchanting_rework.EnchantingRework"
+		],
+		"fabric-datagen": [
+			"net.cree_per_.enchanting_rework.EnchantingReworkDataGenerator"
+		],
+		"client": [
+			"net.cree_per_.enchanting_rework.EnchantingReworkClient"
+		]
+	},
+	"mixins": [
+		"enchanting_rework.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

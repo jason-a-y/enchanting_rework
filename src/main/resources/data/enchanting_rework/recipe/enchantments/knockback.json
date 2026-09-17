@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:snowball"
+  },
+  "lapis": [1,2],
+  "ingredient_cost": [1,2],
+  "result": "minecraft:knockback",
+  "bookshelves": [2,5]
+}

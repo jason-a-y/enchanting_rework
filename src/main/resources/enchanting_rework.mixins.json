@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.cree_per_.enchanting_rework.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "AnvilScreenHandlerMixin",
+    "ExampleMixin",
+    "GrindstoneScreenHandlerMixin",
+    "ToolMaterialMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+	}
+}

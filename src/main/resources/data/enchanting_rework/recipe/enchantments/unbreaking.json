@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:obsidian"
+  },
+  "lapis": [1,1,1],
+  "ingredient_cost": [1,1,1],
+  "result": "minecraft:unbreaking",
+  "bookshelves": [0,3,6]
+}

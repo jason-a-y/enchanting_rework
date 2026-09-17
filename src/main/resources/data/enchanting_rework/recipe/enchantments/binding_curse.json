@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:honey_block"
+  },
+  "lapis": [5],
+  "ingredient_cost": [1],
+  "result": "minecraft:binding_curse",
+  "bookshelves": [15]
+}

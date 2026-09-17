@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:totem_of_undying"
+  },
+  "lapis": [16],
+  "ingredient_cost": [1],
+  "result": "minecraft:infinity",
+  "bookshelves": [15]
+}

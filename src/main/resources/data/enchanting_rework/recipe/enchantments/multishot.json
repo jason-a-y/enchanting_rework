@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:arrow"
+  },
+  "lapis": [12],
+  "ingredient_cost": [3],
+  "result": "minecraft:multishot",
+  "bookshelves": [11]
+}

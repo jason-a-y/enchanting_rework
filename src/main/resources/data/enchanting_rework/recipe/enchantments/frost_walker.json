@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:blue_ice"
+  },
+  "lapis": [4,7],
+  "ingredient_cost": [3,4],
+  "result": "minecraft:frost_walker",
+  "bookshelves": [6,12]
+}

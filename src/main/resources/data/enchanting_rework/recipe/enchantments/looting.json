@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:ender_pearl"
+  },
+  "lapis": [3,5,7],
+  "ingredient_cost": [2,3,4],
+  "result": "minecraft:looting",
+  "bookshelves": [9,12,15]
+}

@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:cobweb"
+  },
+  "lapis": [5],
+  "ingredient_cost": [1],
+  "result": "minecraft:silk_touch",
+  "bookshelves": [5]
+}

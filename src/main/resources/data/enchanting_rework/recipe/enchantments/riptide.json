@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:breeze_rod"
+  },
+  "lapis": [4,6,8],
+  "ingredient_cost": [2,2,3],
+  "result": "minecraft:riptide",
+  "bookshelves": [10,13,15]
+}

@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:blaze_rod"
+  },
+  "lapis": [8],
+  "ingredient_cost": [1],
+  "result": "minecraft:flame",
+  "bookshelves": [10]
+}

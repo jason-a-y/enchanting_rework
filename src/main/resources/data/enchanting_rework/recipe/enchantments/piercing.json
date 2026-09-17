@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:pointed_dripstone"
+  },
+  "lapis": [1,2,2,3],
+  "ingredient_cost": [1,1,2,3],
+  "result": "minecraft:piercing",
+  "bookshelves": [0,3,6,9]
+}

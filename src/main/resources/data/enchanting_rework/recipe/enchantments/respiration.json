@@ -1,0 +1,10 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "ingredient": {
+    "id": "minecraft:turtle_scute"
+  },
+  "lapis": [4,6,9],
+  "ingredient_cost": [1,2,2],
+  "result": "minecraft:respiration",
+  "bookshelves": [7,11,14]
+}
