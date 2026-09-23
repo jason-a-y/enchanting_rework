@@ -20,14 +20,6 @@ public abstract class AnvilScreenHandlerMixin {
         info.setReturnValue(cost);
     }
 
-    /*@Definition(id = "q", local = @Local(type = int.class, ordinal = 10))
-    @Definition(id = "r", local = @Local(type = int.class, ordinal = 11))
-    @Expression("q == r")
-    @ModifyExpressionValue(method = "updateResult", at = @At("MIXINEXTRAS:EXPRESSION"))
-    private boolean disableCombiningEnchantments(boolean original){
-        return false;
-    }*/
-
     @ModifyArgs(method = "updateResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/component/type/ItemEnchantmentsComponent$Builder;set(Lnet/minecraft/registry/entry/RegistryEntry;I)V"))
     private void disableCombiningEnchantments(Args args,
                                               @Local ItemEnchantmentsComponent.Builder builder,
