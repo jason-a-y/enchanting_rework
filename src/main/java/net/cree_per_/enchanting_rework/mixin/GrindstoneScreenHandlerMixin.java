@@ -1,7 +1,6 @@
 package net.cree_per_.enchanting_rework.mixin;
 
 import net.cree_per_.enchanting_rework.recipe.EnchantmentRecipe;
-import net.cree_per_.enchanting_rework.screen.custom.NewEnchantmentScreenHandler;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -26,6 +25,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.ArrayList;
 
 @Mixin(GrindstoneScreenHandler.class)
 public abstract class GrindstoneScreenHandlerMixin {
@@ -85,11 +86,11 @@ public abstract class GrindstoneScreenHandlerMixin {
 
                 String enchantmentId = enchantment.getIdAsString();
 
-                EnchantmentRecipe recipe = NewEnchantmentScreenHandler.recipeFromEnchantmentId(enchantmentId);
+                EnchantmentRecipe recipe = recipeFromEnchantmentId(enchantmentId);
 
                 if (recipe == null) continue;
 
-                int currentEnchantmentLevel = NewEnchantmentScreenHandler.getEnchantmentLevel(stack, enchantment);
+                int currentEnchantmentLevel = getEnchantmentLevel(stack, enchantment);
                 // adds the lapis cost of all previous levels
                 int totalCost = 0;
                 for (int cost : recipe.lapis().subList(0, currentEnchantmentLevel)){
@@ -100,5 +101,35 @@ public abstract class GrindstoneScreenHandlerMixin {
             }
         }
         return lapisCount;
+    }
+
+    // these 2 methods below are copied from NewEnchantmentScreenHandler.java
+    @Unique
+    private static EnchantmentRecipe recipeFromEnchantmentId(String enchantmentId){
+        ArrayList<EnchantmentRecipe> recipes = EnchantmentRecipe.enchantmentRecipes;
+        EnchantmentRecipe recipe = null;
+
+        for (EnchantmentRecipe r : recipes){
+            if (r.output().getIdAsString().equals(enchantmentId)){
+                recipe = r;
+                break;
+            }
+        }
+
+        return recipe;
+    }
+
+    // check the enchantment level of an enchantment on an item, only use this after a hasEnchantment check
+    @Unique
+    private static int getEnchantmentLevel(ItemStack item, RegistryEntry<Enchantment> enchantment){
+        ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(EnchantmentHelper.getEnchantments(item));
+
+        for (RegistryEntry<Enchantment> entry : builder.getEnchantments()){
+            if (entry.getIdAsString().equals(enchantment.getIdAsString())){
+                return builder.getLevel(entry);
+            }
+        }
+
+        return 0;
     }
 }
