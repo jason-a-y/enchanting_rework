@@ -3,9 +3,9 @@
 	"id": "enchanting_rework",
 	"version": "${version}",
 	"name": "Enchanting Rework",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "This is a mod I made to rework Minecraft's enchanting system, primarily to be less focused on luck",
 	"authors": [
-		"Me!"
+		"cree_per_"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
