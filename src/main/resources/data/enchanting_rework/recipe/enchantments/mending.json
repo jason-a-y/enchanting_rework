@@ -1,7 +1,7 @@
 {
   "type": "enchanting_rework:enchantment",
   "ingredient": {
-    "id": "minecraft:echo_shard"
+    "id": "minecraft:totem_of_undying"
   },
   "lapis": [24],
   "ingredient_cost": [1],
