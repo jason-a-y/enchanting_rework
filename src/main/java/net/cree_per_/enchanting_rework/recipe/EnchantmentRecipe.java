@@ -3,23 +3,26 @@ package net.cree_per_.enchanting_rework.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.recipe.*;
-import net.minecraft.recipe.book.RecipeBookCategories;
-import net.minecraft.recipe.book.RecipeBookCategory;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
-
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
 import java.util.ArrayList;
 import java.util.List;
 
-public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<Integer> ingredientCost, RegistryEntry<Enchantment> output, List<Integer> bookshelves) implements Recipe<EnchantmentRecipeInput> {
+public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<Integer> ingredientCost, Holder<Enchantment> output, List<Integer> bookshelves) implements Recipe<EnchantmentRecipeInput> {
 
     public static ArrayList<EnchantmentRecipe> enchantmentRecipes = new ArrayList<>();
 
@@ -28,11 +31,11 @@ public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<I
     }
 
     private Ingredient inputIngredient(){
-        return Ingredient.ofItem(this.inputItem.getItem());
+        return Ingredient.of(this.inputItem.getItem());
     }
 
-    public DefaultedList<Ingredient> getIngredients() {
-        DefaultedList<Ingredient> list = DefaultedList.of();
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> list = NonNullList.create();
         list.add(inputIngredient());
         return list;
     }
@@ -40,17 +43,17 @@ public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<I
     // read recipe JSON files, turn them into a new EnchantmentRecipe
 
     @Override
-    public boolean matches(EnchantmentRecipeInput input, World world) {
-        if(world.isClient()){
+    public boolean matches(EnchantmentRecipeInput input, Level world) {
+        if(world.isClientSide()){
             return false;
         }
 
         // this only checks one slot, it needs to check 2
-        return inputIngredient().test(input.getStackInSlot(0));
+        return inputIngredient().test(input.getItem(0));
     }
 
     @Override
-    public ItemStack craft(EnchantmentRecipeInput input, RegistryWrapper.WrapperLookup registries) {
+    public ItemStack assemble(EnchantmentRecipeInput input, HolderLookup.Provider registries) {
         // input is always the same as output item (different from output enchantment)
         return inputItem.copy();
     }
@@ -66,13 +69,13 @@ public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<I
     }
 
     @Override
-    public IngredientPlacement getIngredientPlacement() {
+    public PlacementInfo placementInfo() {
         // I'm pretty sure this also needs to check 2 slots
-        return IngredientPlacement.forSingleSlot(inputIngredient());
+        return PlacementInfo.create(inputIngredient());
     }
 
     @Override
-    public RecipeBookCategory getRecipeBookCategory() {
+    public RecipeBookCategory recipeBookCategory() {
         return RecipeBookCategories.CRAFTING_MISC;
     }
 
@@ -83,18 +86,18 @@ public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<I
                 ItemStack.CODEC.fieldOf("ingredient").forGetter(EnchantmentRecipe::inputItem),
                 Codec.INT.listOf().fieldOf("lapis").forGetter(EnchantmentRecipe::lapis),
                 Codec.INT.listOf().fieldOf("ingredient_cost").forGetter(EnchantmentRecipe::ingredientCost),
-                Enchantment.ENTRY_CODEC.fieldOf("result").forGetter(EnchantmentRecipe::output),
+                Enchantment.CODEC.fieldOf("result").forGetter(EnchantmentRecipe::output),
                 Codec.INT.listOf().fieldOf("bookshelves").forGetter(EnchantmentRecipe::bookshelves)
 
         ).apply(inst, EnchantmentRecipe::new));
 
-        public static final PacketCodec<RegistryByteBuf, EnchantmentRecipe> STREAM_CODEC =
-                PacketCodec.tuple(
-                        ItemStack.PACKET_CODEC, EnchantmentRecipe::inputItem,
-                        PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), EnchantmentRecipe::lapis,
-                        PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), EnchantmentRecipe::ingredientCost,
-                        Enchantment.ENTRY_PACKET_CODEC, EnchantmentRecipe::output,
-                        PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), EnchantmentRecipe::bookshelves,
+        public static final StreamCodec<RegistryFriendlyByteBuf, EnchantmentRecipe> STREAM_CODEC =
+                StreamCodec.composite(
+                        ItemStack.STREAM_CODEC, EnchantmentRecipe::inputItem,
+                        ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT), EnchantmentRecipe::lapis,
+                        ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT), EnchantmentRecipe::ingredientCost,
+                        Enchantment.STREAM_CODEC, EnchantmentRecipe::output,
+                        ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT), EnchantmentRecipe::bookshelves,
                         EnchantmentRecipe::new);
 
         @Override
@@ -103,7 +106,7 @@ public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<I
         }
 
         @Override
-        public PacketCodec<RegistryByteBuf, EnchantmentRecipe> packetCodec() {
+        public StreamCodec<RegistryFriendlyByteBuf, EnchantmentRecipe> streamCodec() {
             return STREAM_CODEC;
         }
     }

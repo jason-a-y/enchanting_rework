@@ -7,41 +7,42 @@ import net.cree_per_.enchanting_rework.block.entity.custom.NewEnchantingTableBlo
 import net.cree_per_.enchanting_rework.recipe.EnchantmentRecipeInput;
 import net.cree_per_.enchanting_rework.recipe.ModRecipes;
 import net.cree_per_.enchanting_rework.screen.ModScreenHandlers;
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.registry.*;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.screen.*;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.Identifier;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.*;
 
-public class NewEnchantmentScreenHandler extends ScreenHandler {
-    static final Identifier EMPTY_LAPIS_LAZULI_SLOT_TEXTURE = Identifier.ofVanilla("container/slot/lapis_lazuli");
-    private final Inventory inventory;
+public class NewEnchantmentScreenHandler extends AbstractContainerMenu {
+    static final Identifier EMPTY_LAPIS_LAZULI_SLOT_TEXTURE = Identifier.withDefaultNamespace("container/slot/lapis_lazuli");
+    private final Container inventory;
     public final NewEnchantingTableBlockEntity blockEntity;
 
     public static final List<String> listOfEnchantments = listOfEnchantments();
 
-    private final Property seed = Property.create();
+    private final DataSlot seed = DataSlot.standalone();
 
     private static final int TOOL_SLOT = 0;
     private static final int INGREDIENT_SLOT = 1;
@@ -49,114 +50,114 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
 
     Runnable contentsChangedListener = () -> {};
 
-    public NewEnchantmentScreenHandler(int syncId, PlayerInventory inventory, BlockPos pos) {
-        this(syncId, inventory, inventory.player.getEntityWorld().getBlockEntity(pos));
+    public NewEnchantmentScreenHandler(int syncId, Inventory inventory, BlockPos pos) {
+        this(syncId, inventory, inventory.player.level().getBlockEntity(pos));
     }
 
-    public NewEnchantmentScreenHandler(int syncId, PlayerInventory playerInventory, BlockEntity blockEntity) {
+    public NewEnchantmentScreenHandler(int syncId, Inventory playerInventory, BlockEntity blockEntity) {
         super(ModScreenHandlers.NEW_ENCHANTMENT_SCREEN_HANDLER, syncId);
-        this.inventory = ((Inventory) blockEntity);
+        this.inventory = ((Container) blockEntity);
         this.blockEntity = ((NewEnchantingTableBlockEntity) blockEntity);
 
         // tool slot
         this.addSlot(new Slot(inventory, 0, 15, 47){
             @Override
-            public int getMaxItemCount() {
+            public int getMaxStackSize() {
                 return 1;
             }
 
             @Override
-            public void markDirty() {
-                super.markDirty();
+            public void setChanged() {
+                super.setChanged();
                 NewEnchantmentScreenHandler.this.contentsChangedListener.run();
             }
         });
         // ingredient slot
         this.addSlot(new Slot(inventory, 1, 35, 47){
             @Override
-            public void markDirty() {
-                super.markDirty();
+            public void setChanged() {
+                super.setChanged();
                 NewEnchantmentScreenHandler.this.contentsChangedListener.run();
             }
         });
         // lapis slot
         this.addSlot(new Slot(inventory, 2, 15, 67){
             @Override
-            public boolean canInsert(ItemStack stack) {
-                return stack.isOf(Items.LAPIS_LAZULI);
+            public boolean mayPlace(ItemStack stack) {
+                return stack.is(Items.LAPIS_LAZULI);
             }
 
             @Override
-            public Identifier getBackgroundSprite() {
+            public Identifier getNoItemIcon() {
                 return NewEnchantmentScreenHandler.EMPTY_LAPIS_LAZULI_SLOT_TEXTURE;
             }
 
             @Override
-            public void markDirty() {
-                super.markDirty();
+            public void setChanged() {
+                super.setChanged();
                 NewEnchantmentScreenHandler.this.contentsChangedListener.run();
             }
         });
 
-        this.addProperty(this.seed).set(playerInventory.player.getEnchantingTableSeed());
+        this.addDataSlot(this.seed).set(playerInventory.player.getEnchantmentSeed());
 
         addPlayerInventory(playerInventory);
         addPlayerHotbar(playerInventory);
     }
 
     @Override
-    public ItemStack quickMove(PlayerEntity player, int invSlot) {
+    public ItemStack quickMoveStack(Player player, int invSlot) {
         ItemStack newStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(invSlot);
-        if (slot != null && slot.hasStack()) {
-            ItemStack originalStack = slot.getStack();
+        if (slot != null && slot.hasItem()) {
+            ItemStack originalStack = slot.getItem();
             newStack = originalStack.copy();
 
             if (invSlot == TOOL_SLOT) {
-                if (!this.insertItem(originalStack, this.inventory.size(), this.slots.size(), true)) {
+                if (!this.moveItemStackTo(originalStack, this.inventory.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (invSlot == INGREDIENT_SLOT) {
-                if (!this.insertItem(originalStack, this.inventory.size(), this.slots.size(), true)) {
+                if (!this.moveItemStackTo(originalStack, this.inventory.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (invSlot == LAPIS_SLOT) {
-                if (!this.insertItem(originalStack, this.inventory.size(), this.slots.size(), true)) {
+                if (!this.moveItemStackTo(originalStack, this.inventory.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (originalStack.isOf(Items.LAPIS_LAZULI)) {
-                if (!this.insertItem(originalStack, LAPIS_SLOT, LAPIS_SLOT + 1, true)) {
+            } else if (originalStack.is(Items.LAPIS_LAZULI)) {
+                if (!this.moveItemStackTo(originalStack, LAPIS_SLOT, LAPIS_SLOT + 1, true)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                if (originalStack.isEnchantable() || originalStack.isDamageable() || originalStack.isOf(Items.ENCHANTED_BOOK)){
-                    if (this.slots.get(TOOL_SLOT).hasStack() || !this.slots.get(TOOL_SLOT).canInsert(originalStack)) {
+                if (originalStack.isEnchantable() || originalStack.isDamageableItem() || originalStack.is(Items.ENCHANTED_BOOK)){
+                    if (this.slots.get(TOOL_SLOT).hasItem() || !this.slots.get(TOOL_SLOT).mayPlace(originalStack)) {
                         return ItemStack.EMPTY;
                     }
 
                     ItemStack itemStack = originalStack.copyWithCount(1);
-                    originalStack.decrement(1);
-                    this.slots.get(TOOL_SLOT).setStack(itemStack);
+                    originalStack.shrink(1);
+                    this.slots.get(TOOL_SLOT).setByPlayer(itemStack);
                 } else {
-                    if (this.slots.get(INGREDIENT_SLOT).hasStack() || !this.slots.get(INGREDIENT_SLOT).canInsert(originalStack)) {
+                    if (this.slots.get(INGREDIENT_SLOT).hasItem() || !this.slots.get(INGREDIENT_SLOT).mayPlace(originalStack)) {
                         return ItemStack.EMPTY;
-                    } else if (!this.insertItem(originalStack, INGREDIENT_SLOT, INGREDIENT_SLOT + 1, true)) {
+                    } else if (!this.moveItemStackTo(originalStack, INGREDIENT_SLOT, INGREDIENT_SLOT + 1, true)) {
                         return ItemStack.EMPTY;
                     }
                 }
             }
 
             if (originalStack.isEmpty()) {
-                slot.setStack(ItemStack.EMPTY);
+                slot.setByPlayer(ItemStack.EMPTY);
             } else {
-                slot.markDirty();
+                slot.setChanged();
             }
 
             if (originalStack.getCount() == newStack.getCount()) {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTakeItem(player, originalStack);
+            slot.onTake(player, originalStack);
         }
         return newStack;
     }
@@ -164,7 +165,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
     public int bookshelfPower(){
         int power = 0;
         for (BlockPos pos : NewEnchantingTableBlock.POWER_PROVIDER_OFFSETS) {
-            if (NewEnchantingTableBlock.canAccessPowerProvider(blockEntity.getWorld(), blockEntity.getPos(), pos)) {
+            if (NewEnchantingTableBlock.canAccessPowerProvider(blockEntity.getLevel(), blockEntity.getBlockPos(), pos)) {
                 power++;
             }
         }
@@ -172,11 +173,11 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
-        return this.inventory.canPlayerUse(player);
+    public boolean stillValid(Player player) {
+        return this.inventory.stillValid(player);
     }
 
-    private void addPlayerInventory(PlayerInventory playerInventory) {
+    private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
                 this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 96 + i * 18));
@@ -184,7 +185,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
         }
     }
 
-    private void addPlayerHotbar(PlayerInventory playerInventory) {
+    private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 154));
         }
@@ -195,29 +196,29 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public void onClosed(PlayerEntity player) {
-        super.onClosed(player);
-        this.dropInventory(player, this.inventory);
-        inventory.markDirty();
+    public void removed(Player player) {
+        super.removed(player);
+        this.clearContainer(player, this.inventory);
+        inventory.setChanged();
     }
 
     @Override
-    public boolean onButtonClick(PlayerEntity player, int id) {
+    public boolean clickMenuButton(Player player, int id) {
         if (id == 0) {
             // enchantment button
             if (craftEnchantment()) {
-                blockEntity.getWorld().playSound(null, blockEntity.getPos(), SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, blockEntity.getWorld().random.nextFloat() * 0.1F + 0.9F);
+                blockEntity.getLevel().playSound(null, blockEntity.getBlockPos(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, blockEntity.getLevel().random.nextFloat() * 0.1F + 0.9F);
 
-                player.incrementStat(Stats.ENCHANT_ITEM);
-                if (player instanceof ServerPlayerEntity serverPlayer) {
-                    Criteria.ENCHANTED_ITEM.trigger(serverPlayer, inventory.getStack(TOOL_SLOT), id + 1);
+                player.awardStat(Stats.ENCHANT_ITEM);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    CriteriaTriggers.ENCHANTED_ITEM.trigger(serverPlayer, inventory.getItem(TOOL_SLOT), id + 1);
                 }
             }
-            inventory.markDirty();
+            inventory.setChanged();
             return true;
         } else if (id >= 1 && id < getValidEnchantments().size() + 1) {
-            quickMove(player, INGREDIENT_SLOT);
-            quickMove(player, LAPIS_SLOT);
+            quickMoveStack(player, INGREDIENT_SLOT);
+            quickMoveStack(player, LAPIS_SLOT);
             // enchantment selector
             // if a button is pressed, automatically move ingredients into their corresponding slots
 
@@ -239,41 +240,41 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
 
                 // check for necessary ingredients in player inventory
                 for (Slot slot : this.slots.subList(4, this.slots.size())) {
-                    if (slot.hasStack()){
-                        ItemStack originalStack = slot.getStack();
+                    if (slot.hasItem()){
+                        ItemStack originalStack = slot.getItem();
 
                         // to do: move ingredients into their corresponding slots
-                        if (originalStack.isOf(Items.LAPIS_LAZULI)){
+                        if (originalStack.is(Items.LAPIS_LAZULI)){
                             if (lapisCost > 0){
                                 int originalStackCount = originalStack.getCount();
                                 if (lapisCost >= originalStackCount){
                                     // move the whole stack
-                                    if (this.insertItem(originalStack, LAPIS_SLOT, LAPIS_SLOT + 1, true)){
+                                    if (this.moveItemStackTo(originalStack, LAPIS_SLOT, LAPIS_SLOT + 1, true)){
                                         lapisCost -= originalStackCount;
                                     }
                                 } else {
                                     // move part of the stack
                                     ItemStack partialStack = originalStack.copyWithCount(lapisCost);
-                                    if (this.insertItem(partialStack, LAPIS_SLOT, LAPIS_SLOT + 1, true)){
-                                        originalStack.decrement(lapisCost);
+                                    if (this.moveItemStackTo(partialStack, LAPIS_SLOT, LAPIS_SLOT + 1, true)){
+                                        originalStack.shrink(lapisCost);
                                         lapisCost = 0;
                                     }
                                 }
                             }
 
-                        } else if (originalStack.isOf(recipe.inputItem().getItem())){
+                        } else if (originalStack.is(recipe.inputItem().getItem())){
                             if (ingredientCost > 0){
                                 int originalStackCount = originalStack.getCount();
                                 if (ingredientCost >= originalStackCount){
                                     // move the whole stack
-                                    if (this.insertItem(originalStack, INGREDIENT_SLOT, INGREDIENT_SLOT + 1, true)){
+                                    if (this.moveItemStackTo(originalStack, INGREDIENT_SLOT, INGREDIENT_SLOT + 1, true)){
                                         ingredientCost -= originalStackCount;
                                     }
                                 } else {
                                     // move part of the stack
                                     ItemStack partialStack = originalStack.copyWithCount(ingredientCost);
-                                    if (this.insertItem(partialStack, INGREDIENT_SLOT, INGREDIENT_SLOT + 1, true)){
-                                        originalStack.decrement(ingredientCost);
+                                    if (this.moveItemStackTo(partialStack, INGREDIENT_SLOT, INGREDIENT_SLOT + 1, true)){
+                                        originalStack.shrink(ingredientCost);
                                         ingredientCost = 0;
                                     }
                                 }
@@ -284,39 +285,39 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
                 }
             }
 
-            inventory.markDirty();
-            blockEntity.getWorld().playSound(null, blockEntity.getPos(), SoundEvents.UI_BUTTON_CLICK.value(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+            inventory.setChanged();
+            blockEntity.getLevel().playSound(null, blockEntity.getBlockPos(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 1.0F, 1.0F);
             return true;
         } else {
-            Util.logErrorOrPause(player.getStringifiedName() + " pressed invalid button id: " + id);
+            Util.logAndPauseIfInIde(player.getPlainTextName() + " pressed invalid button id: " + id);
             return false;
         }
     }
 
     // enchantment recipes only work if the ingredient and output are the same item
     private boolean craftEnchantment(){
-        Optional<RecipeEntry<EnchantmentRecipe>> recipe = getCurrentRecipe();
+        Optional<RecipeHolder<EnchantmentRecipe>> recipe = getCurrentRecipe();
 
         if (recipe.isPresent()) {
 
-            String enchantmentId = recipe.get().value().output().getIdAsString();
+            String enchantmentId = recipe.get().value().output().getRegisteredName();
 
             if (canEnchantToolSlot(enchantmentId)){
 
-                int currentEnchantmentLevel = getEnchantmentLevel(inventory.getStack(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
+                int currentEnchantmentLevel = getEnchantmentLevel(inventory.getItem(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
 
                 int ingredientCost = recipeIngredientCost(enchantmentId);
                 int lapisCost = recipeLapisCost(enchantmentId);
 
-                int ingredientCount = inventory.getStack(INGREDIENT_SLOT).getCount();
-                int lapisCount = inventory.getStack(LAPIS_SLOT).getCount();
+                int ingredientCount = inventory.getItem(INGREDIENT_SLOT).getCount();
+                int lapisCount = inventory.getItem(LAPIS_SLOT).getCount();
 
                 // if the enchanting table has enough ingredients to enchant
                 if (ingredientCount >= ingredientCost && lapisCount >= lapisCost){
-                    inventory.removeStack(INGREDIENT_SLOT, ingredientCost);
-                    inventory.removeStack(LAPIS_SLOT, lapisCost);
+                    inventory.removeItem(INGREDIENT_SLOT, ingredientCost);
+                    inventory.removeItem(LAPIS_SLOT, lapisCost);
 
-                    String enchantment = recipe.get().value().output().getIdAsString();
+                    String enchantment = recipe.get().value().output().getRegisteredName();
                     if (!enchantment.isEmpty()){
                         enchantToolSlot(enchantment, currentEnchantmentLevel + 1);
                     }
@@ -328,7 +329,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
     }
 
     private boolean canEnchantToolSlot(String enchantmentId){
-        ItemStack tool = inventory.getStack(TOOL_SLOT);
+        ItemStack tool = inventory.getItem(TOOL_SLOT);
 
         if (!getValidEnchantments().contains(enchantmentId)){
             return false;
@@ -337,30 +338,30 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
         return canIncreaseEnchantmentLevel(tool, enchantmentId);
     }
 
-    private RegistryEntry<Enchantment> getEnchantmentFromString(String enchantmentId){
-        Registry<Enchantment> enchantmentRegistry = blockEntity.getWorld().getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT);
+    private Holder<Enchantment> getEnchantmentFromString(String enchantmentId){
+        Registry<Enchantment> enchantmentRegistry = blockEntity.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 
-        return enchantmentRegistry.getEntry(enchantmentRegistry.get(Identifier.of(enchantmentId)));
+        return enchantmentRegistry.wrapAsHolder(enchantmentRegistry.getValue(Identifier.parse(enchantmentId)));
     }
 
     private void enchantToolSlot(String enchantmentId, int level){
-        ItemStack tool = inventory.getStack(TOOL_SLOT);
+        ItemStack tool = inventory.getItem(TOOL_SLOT);
         ItemStack enchantedBook;
-        if (tool.isOf(Items.BOOK)){
-            enchantedBook = tool.withItem(Items.ENCHANTED_BOOK);
-            enchantedBook.addEnchantment(getEnchantmentFromString(enchantmentId), level);
-            inventory.setStack(TOOL_SLOT, enchantedBook);
+        if (tool.is(Items.BOOK)){
+            enchantedBook = tool.transmuteCopy(Items.ENCHANTED_BOOK);
+            enchantedBook.enchant(getEnchantmentFromString(enchantmentId), level);
+            inventory.setItem(TOOL_SLOT, enchantedBook);
         } else {
-            tool.addEnchantment(getEnchantmentFromString(enchantmentId), level);
+            tool.enchant(getEnchantmentFromString(enchantmentId), level);
         }
     }
 
     // check if the tool slot has a given enchantment
     private boolean hasEnchantment(ItemStack item, String enchantmentId){
-        ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(EnchantmentHelper.getEnchantments(item));
+        ItemEnchantments.Mutable builder = new ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(item));
 
-        for (RegistryEntry<Enchantment> entry : builder.getEnchantments()){
-            if (entry.getIdAsString().equals(enchantmentId)){
+        for (Holder<Enchantment> entry : builder.keySet()){
+            if (entry.getRegisteredName().equals(enchantmentId)){
                 return true;
             }
         }
@@ -369,7 +370,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
     }
 
     private boolean canIncreaseEnchantmentLevel(ItemStack item, String enchantmentId){
-        RegistryEntry<Enchantment> enchantment = getEnchantmentFromString(enchantmentId);
+        Holder<Enchantment> enchantment = getEnchantmentFromString(enchantmentId);
 
         int maxLevel = enchantment.value().getMaxLevel();
 
@@ -379,15 +380,15 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
     }
 
     public int getCurrentToolEnchantmentLevel(String enchantmentId){
-        return getEnchantmentLevel(inventory.getStack(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
+        return getEnchantmentLevel(inventory.getItem(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
     }
 
     // check the enchantment level of an enchantment on an item, only use this after a hasEnchantment check
-    public static int getEnchantmentLevel(ItemStack item, RegistryEntry<Enchantment> enchantment){
-        ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(EnchantmentHelper.getEnchantments(item));
+    public static int getEnchantmentLevel(ItemStack item, Holder<Enchantment> enchantment){
+        ItemEnchantments.Mutable builder = new ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(item));
 
-        for (RegistryEntry<Enchantment> entry : builder.getEnchantments()){
-            if (entry.getIdAsString().equals(enchantment.getIdAsString())){
+        for (Holder<Enchantment> entry : builder.keySet()){
+            if (entry.getRegisteredName().equals(enchantment.getRegisteredName())){
                 return builder.getLevel(entry);
             }
         }
@@ -395,18 +396,18 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
         return 0;
     }
 
-    private Optional<RecipeEntry<EnchantmentRecipe>> getCurrentRecipe() {
-        if (blockEntity.getWorld().isClient()){
+    private Optional<RecipeHolder<EnchantmentRecipe>> getCurrentRecipe() {
+        if (blockEntity.getLevel().isClientSide()){
             return Optional.empty();
         }
-        return ((ServerWorld) blockEntity.getWorld()).getRecipeManager()
-                .getFirstMatch(ModRecipes.ENCHANTMENT_TYPE, new EnchantmentRecipeInput(inventory.getStack(INGREDIENT_SLOT)), blockEntity.getWorld());
+        return ((ServerLevel) blockEntity.getLevel()).recipeAccess()
+                .getRecipeFor(ModRecipes.ENCHANTMENT_TYPE, new EnchantmentRecipeInput(inventory.getItem(INGREDIENT_SLOT)), blockEntity.getLevel());
     }
 
     // used in NewEnchantmentScreen.java
     public List<String> getValidEnchantments() {
         LinkedList<String> validEnchantments = new LinkedList<>();
-        ItemStack tool = inventory.getStack(TOOL_SLOT);
+        ItemStack tool = inventory.getItem(TOOL_SLOT);
 
         if (tool.isEmpty()){
             return validEnchantments;
@@ -415,8 +416,8 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
         for (String enchantmentId : listOfEnchantments) {
             if (
                     (tool.canBeEnchantedWith(getEnchantmentFromString(enchantmentId), EnchantingContext.ACCEPTABLE)
-                            || tool.isOf(Items.BOOK)
-                            || tool.isOf(Items.ENCHANTED_BOOK))
+                            || tool.is(Items.BOOK)
+                            || tool.is(Items.ENCHANTED_BOOK))
 
                             && canIncreaseEnchantmentLevel(tool, enchantmentId)
                             && isCompatible(tool, enchantmentId)
@@ -434,7 +435,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
             if (enchantmentId.equals(id)){
                 continue;
             }
-            if (hasEnchantment(item, id) && !Enchantment.canBeCombined(getEnchantmentFromString(enchantmentId), getEnchantmentFromString(id))){
+            if (hasEnchantment(item, id) && !Enchantment.areCompatible(getEnchantmentFromString(enchantmentId), getEnchantmentFromString(id))){
                 return false;
             }
         }
@@ -464,11 +465,11 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
 
         // check for necessary ingredients in player inventory
         for (Slot slot : this.slots) {
-            if (slot.hasStack()){
-                if (slot.getStack().isOf(Items.LAPIS_LAZULI)){
-                    lapisCount += slot.getStack().getCount();
-                } else if (slot.getStack().isOf(recipe.inputItem().getItem())){
-                    ingredientCount += slot.getStack().getCount();
+            if (slot.hasItem()){
+                if (slot.getItem().is(Items.LAPIS_LAZULI)){
+                    lapisCount += slot.getItem().getCount();
+                } else if (slot.getItem().is(recipe.inputItem().getItem())){
+                    ingredientCount += slot.getItem().getCount();
                 }
             }
         }
@@ -480,7 +481,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
         EnchantmentRecipe recipe = recipeFromEnchantmentId(enchantmentId);
         if (recipe == null) return 0;
 
-        int currentEnchantmentLevel = getEnchantmentLevel(inventory.getStack(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
+        int currentEnchantmentLevel = getEnchantmentLevel(inventory.getItem(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
         // potential index error, only use after a successful call to canIncreaseEnchantmentLevel()
         return recipe.ingredientCost().get(currentEnchantmentLevel);
     }
@@ -488,9 +489,9 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
     public int recipeLapisCost(String enchantmentId){
         EnchantmentRecipe recipe = recipeFromEnchantmentId(enchantmentId);
         // gold tools don't require lapis (NOT TESTED YET)
-        if ((recipe == null) || inventory.getStack(TOOL_SLOT).isIn(ItemTags.PIGLIN_LOVED)) return 0;
+        if ((recipe == null) || inventory.getItem(TOOL_SLOT).is(ItemTags.PIGLIN_LOVED)) return 0;
 
-        int currentEnchantmentLevel = getEnchantmentLevel(inventory.getStack(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
+        int currentEnchantmentLevel = getEnchantmentLevel(inventory.getItem(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
         // potential index error, only use after a successful call to canIncreaseEnchantmentLevel()
         return recipe.lapis().get(currentEnchantmentLevel);
     }
@@ -499,7 +500,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
         EnchantmentRecipe recipe = recipeFromEnchantmentId(enchantmentId);
         if (recipe == null) return 0;
 
-        int currentEnchantmentLevel = getEnchantmentLevel(inventory.getStack(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
+        int currentEnchantmentLevel = getEnchantmentLevel(inventory.getItem(TOOL_SLOT), getEnchantmentFromString(enchantmentId));
         // potential index error, only use after a successful call to canIncreaseEnchantmentLevel()
         return recipe.bookshelves().get(currentEnchantmentLevel);
     }
@@ -509,7 +510,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
         EnchantmentRecipe recipe = null;
 
         for (EnchantmentRecipe r : recipes){
-            if (r.output().getIdAsString().equals(enchantmentId)){
+            if (r.output().getRegisteredName().equals(enchantmentId)){
                 recipe = r;
                 break;
             }
@@ -519,7 +520,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
     }
 
     public boolean canEnchant(){
-        if (inventory.getStack(TOOL_SLOT).isEmpty()){
+        if (inventory.getItem(TOOL_SLOT).isEmpty()){
             return false;
         } else {
             return !getValidEnchantments().isEmpty();
@@ -529,7 +530,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
     private static List<String> listOfEnchantments(){
         List<String> enchantmentsList = new ArrayList<>();
         for (EnchantmentRecipe recipe : EnchantmentRecipe.enchantmentRecipes){
-            enchantmentsList.add(recipe.output().getIdAsString());
+            enchantmentsList.add(recipe.output().getRegisteredName());
         }
 
         return enchantmentsList;
