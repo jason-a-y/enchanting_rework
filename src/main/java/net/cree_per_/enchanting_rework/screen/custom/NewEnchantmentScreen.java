@@ -3,7 +3,7 @@ package net.cree_per_.enchanting_rework.screen.custom;
 import com.google.common.collect.Lists;
 import net.cree_per_.enchanting_rework.EnchantingRework;
 import net.cree_per_.enchanting_rework.recipe.EnchantmentRecipe;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EnchantmentNames;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -21,11 +21,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import java.util.List;
 
-public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantmentScreenHandler> {
+public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantmentMenu> {
     private static final Identifier TEXTURE =
             Identifier.fromNamespaceAndPath(EnchantingRework.MOD_ID,"textures/gui/container/enchanting_table.png");
     private static final Identifier BOOK_TEXTURE =
-            Identifier.withDefaultNamespace("textures/entity/enchanting_table_book.png");
+            Identifier.withDefaultNamespace("textures/entity/enchantment/enchanting_table_book.png");
     private static final Identifier SCROLLER_TEXTURE = Identifier.withDefaultNamespace("container/stonecutter/scroller");
     private static final Identifier SCROLLER_DISABLED_TEXTURE = Identifier.withDefaultNamespace("container/stonecutter/scroller_disabled");
     private static final int SCROLLBAR_WIDTH = 12;
@@ -34,7 +34,7 @@ public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantment
     private static final int ENCHANTMENT_SLOT_HEIGHT = 19;
 
     private final RandomSource random = RandomSource.create();
-    private BookModel BOOK_MODEL;
+    private BookModel bookModel;
     public float nextPageAngle;
     public float pageAngle;
     public float approximatePageAngle;
@@ -59,10 +59,8 @@ public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantment
     private static final Identifier ENCHANTMENT_BUTTON_HIGHLIGHTED_TEXTURE = Identifier.fromNamespaceAndPath(EnchantingRework.MOD_ID,"textures/gui/sprites/container/enchanting_table/button_highlighted.png");
     private static final Identifier ENCHANTMENT_BUTTON_TEXTURE = Identifier.fromNamespaceAndPath(EnchantingRework.MOD_ID,"textures/gui/sprites/container/enchanting_table/button.png");
 
-    public NewEnchantmentScreen(NewEnchantmentScreenHandler handler, Inventory inventory, Component title) {
-        super(handler, inventory, title);
-        this.imageWidth = 188;
-        this.imageHeight = 178;
+    public NewEnchantmentScreen(NewEnchantmentMenu handler, Inventory inventory, Component title) {
+        super(handler, inventory, title, 188, 178);
         this.inventoryLabelY = this.imageHeight - 94;
 
         handler.setContentsChangedListener(this::onInventoryChange);
@@ -71,7 +69,7 @@ public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantment
     @Override
     protected void init() {
         super.init();
-        this.BOOK_MODEL = new BookModel(this.minecraft.getEntityModels().bakeLayer(ModelLayers.BOOK));
+        this.bookModel = new BookModel(this.minecraft.getEntityModels().bakeLayer(ModelLayers.BOOK));
     }
 
     @Override
@@ -163,7 +161,7 @@ public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantment
     }
 
     @Override
-    protected void renderBg(GuiGraphics context, float deltaTicks, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         context.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
@@ -208,7 +206,7 @@ public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantment
                 continue;
             }
             context.blitSprite(RenderPipelines.GUI_TEXTURED, slotTexture, i + 60, j + 14 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset, 108, ENCHANTMENT_SLOT_HEIGHT);
-            context.drawWordWrap(this.font, stringVisitable, i + 80, j + 16 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset, p, ARGB.opaque(q), false);
+            context.textWithWordWrap(this.font, stringVisitable, i + 80, j + 16 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset, p, ARGB.opaque(q), false);
 
             drawIngredients(context, validEnchantments.get(k), i, j, k);
         }
@@ -227,12 +225,12 @@ public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantment
 
             String bookshelfCount = "" + this.menu.bookshelfPower();
 
-            context.renderItem(Items.BOOKSHELF.getDefaultInstance(), i + 35, j + 67);
-            context.drawString(this.font, bookshelfCount, i + 52 - bookshelfCount.length() * 6, j + 76, ARGB.opaque(0xffffff));
+            context.item(Items.BOOKSHELF.getDefaultInstance(), i + 35, j + 67);
+            context.text(this.font, bookshelfCount, i + 52 - bookshelfCount.length() * 6, j + 76, ARGB.opaque(0xffffff));
         }
     }
 
-    private void drawIngredients(GuiGraphics context, String enchantmentId, int i, int j, int k){
+    private void drawIngredients(GuiGraphicsExtractor context, String enchantmentId, int i, int j, int k){
         String ingredientCount = "" + this.menu.recipeIngredientCost(enchantmentId);
         String lapisCount = "" + this.menu.recipeLapisCost(enchantmentId);
 
@@ -242,20 +240,20 @@ public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantment
         if (lapisCount.equals("1")){
             lapisCount = "";
         }
-        EnchantmentRecipe recipe = NewEnchantmentScreenHandler.recipeFromEnchantmentId(enchantmentId);
+        EnchantmentRecipe recipe = NewEnchantmentMenu.recipeFromEnchantmentId(enchantmentId);
 
-        ItemStack displayItem = recipe == null ? ItemStack.EMPTY : recipe.inputItem();
+        ItemStack displayItem = recipe == null ? ItemStack.EMPTY : recipe.inputItem().create();
 
-        context.renderItem(displayItem, i + 61, j + 15 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset);
-        context.drawString(this.font, ingredientCount, i + 78 - ingredientCount.length() * 6, j + 24 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset, ARGB.opaque(0xffffff));
+        context.item(displayItem, i + 61, j + 15 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset);
+        context.text(this.font, ingredientCount, i + 78 - ingredientCount.length() * 6, j + 24 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset, ARGB.opaque(0xffffff));
 
         if (!lapisCount.equals("0")){
-            context.renderItem(Items.LAPIS_LAZULI.getDefaultInstance(), i + 150, j + 15 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset);
-            context.drawString(this.font, lapisCount, i + 167 - lapisCount.length() * 6, j + 24 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset, ARGB.opaque(0xffffff));
+            context.item(Items.LAPIS_LAZULI.getDefaultInstance(), i + 150, j + 15 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset);
+            context.text(this.font, lapisCount, i + 167 - lapisCount.length() * 6, j + 24 + ENCHANTMENT_SLOT_HEIGHT * k - this.scrollOffset, ARGB.opaque(0xffffff));
         }
     }
 
-    private void drawBook(GuiGraphics context, int x, int y) {
+    private void drawBook(GuiGraphicsExtractor context, int x, int y) {
         float f = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
         float g = Mth.lerp(f, this.pageTurningSpeed, this.nextPageTurningSpeed);
         float h = Mth.lerp(f, this.pageAngle, this.nextPageAngle);
@@ -263,14 +261,14 @@ public class NewEnchantmentScreen extends AbstractContainerScreen<NewEnchantment
         int j = y + 14;
         int k = i + 38;
         int l = j + 31;
-        context.submitBookModelRenderState(this.BOOK_MODEL, BOOK_TEXTURE, 40.0F, g, h, i, j, k, l);
+        context.book(this.bookModel, BOOK_TEXTURE, 40.0F, g, h, i, j, k, l);
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
         float f = this.minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-        super.render(context, mouseX, mouseY, f);
-        this.renderTooltip(context, mouseX, mouseY);
+        super.extractRenderState(context, mouseX, mouseY, f);
+        this.extractTooltip(context, mouseX, mouseY);
 
         List<String> validEnchantments = this.menu.getValidEnchantments();
 

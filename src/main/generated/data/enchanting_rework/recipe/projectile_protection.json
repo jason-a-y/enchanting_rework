@@ -1,0 +1,25 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    0,
+    3,
+    6,
+    9
+  ],
+  "ingredient": {
+    "id": "minecraft:flint"
+  },
+  "ingredient_cost": [
+    1,
+    1,
+    2,
+    2
+  ],
+  "lapis": [
+    1,
+    1,
+    2,
+    2
+  ],
+  "result": "minecraft:projectile_protection"
+}

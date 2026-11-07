@@ -103,7 +103,7 @@ public abstract class GrindstoneMenuMixin {
         return lapisCount;
     }
 
-    // these 2 methods below are copied from NewEnchantmentScreenHandler.java
+    // these 2 methods below are copied from NewEnchantmentMenu.java
     @Unique
     private static EnchantmentRecipe recipeFromEnchantmentId(String enchantmentId){
         ArrayList<EnchantmentRecipe> recipes = EnchantmentRecipe.enchantmentRecipes;

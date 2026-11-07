@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "enchanting_rework:luck_of_the_sea"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tripwire_hook": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:tripwire_hook"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tripwire_hook"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "enchanting_rework:luck_of_the_sea"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    5,
+    8,
+    11,
+    13,
+    15
+  ],
+  "ingredient": {
+    "id": "minecraft:iron_block"
+  },
+  "ingredient_cost": [
+    1,
+    1,
+    1,
+    2,
+    2
+  ],
+  "lapis": [
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "result": "minecraft:density"
+}

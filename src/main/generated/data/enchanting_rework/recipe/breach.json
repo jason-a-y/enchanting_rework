@@ -1,0 +1,25 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    6,
+    9,
+    12,
+    15
+  ],
+  "ingredient": {
+    "id": "minecraft:gold_block"
+  },
+  "ingredient_cost": [
+    1,
+    1,
+    2,
+    2
+  ],
+  "lapis": [
+    2,
+    4,
+    6,
+    8
+  ],
+  "result": "minecraft:breach"
+}

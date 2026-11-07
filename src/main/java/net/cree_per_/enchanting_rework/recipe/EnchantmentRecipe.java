@@ -4,12 +4,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
@@ -22,7 +21,7 @@ import net.minecraft.world.level.Level;
 import java.util.ArrayList;
 import java.util.List;
 
-public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<Integer> ingredientCost, Holder<Enchantment> output, List<Integer> bookshelves) implements Recipe<EnchantmentRecipeInput> {
+public record EnchantmentRecipe(ItemStackTemplate inputItem, List<Integer> lapis, List<Integer> ingredientCost, Holder<Enchantment> output, List<Integer> bookshelves) implements Recipe<EnchantmentRecipeInput> {
 
     public static ArrayList<EnchantmentRecipe> enchantmentRecipes = new ArrayList<>();
 
@@ -31,13 +30,7 @@ public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<I
     }
 
     private Ingredient inputIngredient(){
-        return Ingredient.of(this.inputItem.getItem());
-    }
-
-    public NonNullList<Ingredient> getIngredients() {
-        NonNullList<Ingredient> list = NonNullList.create();
-        list.add(inputIngredient());
-        return list;
+        return Ingredient.of(this.inputItem.create().getItem());
     }
 
     // read recipe JSON files, turn them into a new EnchantmentRecipe
@@ -53,9 +46,19 @@ public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<I
     }
 
     @Override
-    public ItemStack assemble(EnchantmentRecipeInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(EnchantmentRecipeInput input/*, HolderLookup.Provider registries*/) {
         // input is always the same as output item (different from output enchantment)
-        return inputItem.copy();
+        return inputItem.create().copy();
+    }
+
+    @Override
+    public boolean showNotification() {
+        return true;
+    }
+
+    @Override
+    public String group() {
+        return "Enchantment";
     }
 
     @Override
@@ -80,34 +83,22 @@ public record EnchantmentRecipe(ItemStack inputItem, List<Integer> lapis, List<I
     }
 
     // json file translation code
-    public static class Serializer implements RecipeSerializer<EnchantmentRecipe> {
-        public static final MapCodec<EnchantmentRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+    public static final MapCodec<EnchantmentRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 
-                ItemStack.CODEC.fieldOf("ingredient").forGetter(EnchantmentRecipe::inputItem),
-                Codec.INT.listOf().fieldOf("lapis").forGetter(EnchantmentRecipe::lapis),
-                Codec.INT.listOf().fieldOf("ingredient_cost").forGetter(EnchantmentRecipe::ingredientCost),
-                Enchantment.CODEC.fieldOf("result").forGetter(EnchantmentRecipe::output),
-                Codec.INT.listOf().fieldOf("bookshelves").forGetter(EnchantmentRecipe::bookshelves)
+            ItemStackTemplate.CODEC.fieldOf("ingredient").forGetter(EnchantmentRecipe::inputItem),
+            Codec.INT.listOf().fieldOf("lapis").forGetter(EnchantmentRecipe::lapis),
+            Codec.INT.listOf().fieldOf("ingredient_cost").forGetter(EnchantmentRecipe::ingredientCost),
+            Enchantment.CODEC.fieldOf("result").forGetter(EnchantmentRecipe::output),
+            Codec.INT.listOf().fieldOf("bookshelves").forGetter(EnchantmentRecipe::bookshelves)
 
-        ).apply(inst, EnchantmentRecipe::new));
+    ).apply(inst, EnchantmentRecipe::new));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, EnchantmentRecipe> STREAM_CODEC =
-                StreamCodec.composite(
-                        ItemStack.STREAM_CODEC, EnchantmentRecipe::inputItem,
-                        ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT), EnchantmentRecipe::lapis,
-                        ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT), EnchantmentRecipe::ingredientCost,
-                        Enchantment.STREAM_CODEC, EnchantmentRecipe::output,
-                        ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT), EnchantmentRecipe::bookshelves,
-                        EnchantmentRecipe::new);
-
-        @Override
-        public MapCodec<EnchantmentRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, EnchantmentRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
-    }
+    public static final StreamCodec<RegistryFriendlyByteBuf, EnchantmentRecipe> STREAM_CODEC =
+            StreamCodec.composite(
+                    ItemStackTemplate.STREAM_CODEC, EnchantmentRecipe::inputItem,
+                    ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT), EnchantmentRecipe::lapis,
+                    ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT), EnchantmentRecipe::ingredientCost,
+                    Enchantment.STREAM_CODEC, EnchantmentRecipe::output,
+                    ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.INT), EnchantmentRecipe::bookshelves,
+                    EnchantmentRecipe::new);
 }

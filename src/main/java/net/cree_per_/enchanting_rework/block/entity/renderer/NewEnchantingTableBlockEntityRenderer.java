@@ -11,10 +11,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.EnchantTableRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+//import net.minecraft.client.resources.model.Material;
+//import net.minecraft.client.resources.model.MaterialSet;
+//import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -24,12 +27,12 @@ import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public class NewEnchantingTableBlockEntityRenderer implements BlockEntityRenderer<NewEnchantingTableBlockEntity, EnchantTableRenderState> {
-    public static final Material BOOK_TEXTURE = Sheets.BLOCK_ENTITIES_MAPPER.defaultNamespaceApply("enchanting_table_book");
-    private final MaterialSet spriteHolder;
+    public static final SpriteId BOOK_TEXTURE = Sheets.BLOCK_ENTITIES_MAPPER.defaultNamespaceApply("enchantment/enchanting_table_book");
+    private final SpriteGetter spriteHolder;
     private final BookModel book;
 
     public NewEnchantingTableBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
-        this.spriteHolder = ctx.materials();
+        this.spriteHolder = ctx.sprites();
         this.book = new BookModel(ctx.bakeLayer(ModelLayers.BOOK));
     }
 
@@ -78,10 +81,9 @@ public class NewEnchantingTableBlockEntityRenderer implements BlockEntityRendere
         float g = Mth.frac(state.flip + 0.25F) * 1.6F - 0.3F;
         float h = Mth.frac(state.flip + 0.75F) * 1.6F - 0.3F;
         BookModel.State bookModelState = new BookModel.State(
-                state.time,
+                state.open,
                 Mth.clamp(g, 0.0F, 1.0F),
-                Mth.clamp(h, 0.0F, 1.0F),
-                state.open
+                Mth.clamp(h, 0.0F, 1.0F)
         );
         orderedRenderCommandQueue.submitModel(
                 this.book,

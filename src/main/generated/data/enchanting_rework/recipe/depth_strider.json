@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    4,
+    7,
+    10
+  ],
+  "ingredient": {
+    "id": "minecraft:nautilus_shell"
+  },
+  "ingredient_cost": [
+    1,
+    2,
+    3
+  ],
+  "lapis": [
+    2,
+    3,
+    4
+  ],
+  "result": "minecraft:depth_strider"
+}

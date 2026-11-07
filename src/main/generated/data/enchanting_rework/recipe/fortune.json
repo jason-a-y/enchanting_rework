@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    9,
+    12,
+    15
+  ],
+  "ingredient": {
+    "id": "minecraft:diamond"
+  },
+  "ingredient_cost": [
+    2,
+    3,
+    4
+  ],
+  "lapis": [
+    3,
+    5,
+    7
+  ],
+  "result": "minecraft:fortune"
+}

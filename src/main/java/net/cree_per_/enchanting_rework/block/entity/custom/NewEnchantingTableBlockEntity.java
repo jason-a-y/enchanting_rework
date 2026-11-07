@@ -1,7 +1,7 @@
 package net.cree_per_.enchanting_rework.block.entity.custom;
 
 import net.cree_per_.enchanting_rework.block.entity.ModBlockEntities;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -23,11 +23,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.cree_per_.enchanting_rework.block.entity.ImplementedInventory;
-import net.cree_per_.enchanting_rework.block.entity.ModBlockEntities;
-import net.cree_per_.enchanting_rework.screen.custom.NewEnchantmentScreenHandler;
+import net.cree_per_.enchanting_rework.screen.custom.NewEnchantmentMenu;
 import org.jetbrains.annotations.Nullable;
 
-public class NewEnchantingTableBlockEntity extends BlockEntity implements ExtendedScreenHandlerFactory<BlockPos>, ImplementedInventory {
+public class NewEnchantingTableBlockEntity extends BlockEntity implements ExtendedMenuProvider<BlockPos>, ImplementedInventory {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
 
     public int ticks;
@@ -63,7 +62,7 @@ public class NewEnchantingTableBlockEntity extends BlockEntity implements Extend
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
-        return new NewEnchantmentScreenHandler(syncId, playerInventory, this);
+        return new NewEnchantmentMenu(syncId, playerInventory, this);
     }
 
     @Override

@@ -1,0 +1,16 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    15
+  ],
+  "ingredient": {
+    "id": "minecraft:echo_shard"
+  },
+  "ingredient_cost": [
+    1
+  ],
+  "lapis": [
+    16
+  ],
+  "result": "minecraft:infinity"
+}

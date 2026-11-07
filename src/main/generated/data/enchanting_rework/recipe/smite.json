@@ -1,0 +1,28 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    0,
+    2,
+    4,
+    6,
+    8
+  ],
+  "ingredient": {
+    "id": "minecraft:rotten_flesh"
+  },
+  "ingredient_cost": [
+    1,
+    1,
+    2,
+    2,
+    3
+  ],
+  "lapis": [
+    1,
+    1,
+    2,
+    2,
+    3
+  ],
+  "result": "minecraft:smite"
+}

@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    8,
+    12,
+    15
+  ],
+  "ingredient": {
+    "id": "minecraft:sugar"
+  },
+  "ingredient_cost": [
+    1,
+    2,
+    3
+  ],
+  "lapis": [
+    3,
+    5,
+    7
+  ],
+  "result": "minecraft:lunge"
+}

@@ -1,0 +1,19 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    8,
+    12
+  ],
+  "ingredient": {
+    "id": "minecraft:blaze_powder"
+  },
+  "ingredient_cost": [
+    1,
+    1
+  ],
+  "lapis": [
+    3,
+    6
+  ],
+  "result": "minecraft:fire_aspect"
+}

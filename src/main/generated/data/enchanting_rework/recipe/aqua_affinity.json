@@ -1,0 +1,16 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    1
+  ],
+  "ingredient": {
+    "id": "minecraft:prismarine_crystals"
+  },
+  "ingredient_cost": [
+    1
+  ],
+  "lapis": [
+    2
+  ],
+  "result": "minecraft:aqua_affinity"
+}

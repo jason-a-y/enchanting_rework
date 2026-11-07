@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    12,
+    14,
+    16
+  ],
+  "ingredient": {
+    "id": "minecraft:sculk_shrieker"
+  },
+  "ingredient_cost": [
+    1,
+    1,
+    2
+  ],
+  "lapis": [
+    5,
+    8,
+    11
+  ],
+  "result": "minecraft:swift_sneak"
+}

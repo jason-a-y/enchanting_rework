@@ -1,0 +1,16 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    12
+  ],
+  "ingredient": {
+    "id": "minecraft:heart_of_the_sea"
+  },
+  "ingredient_cost": [
+    1
+  ],
+  "lapis": [
+    9
+  ],
+  "result": "minecraft:channeling"
+}

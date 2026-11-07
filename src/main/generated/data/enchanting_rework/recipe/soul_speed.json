@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    6,
+    9,
+    12
+  ],
+  "ingredient": {
+    "id": "minecraft:ghast_tear"
+  },
+  "ingredient_cost": [
+    1,
+    1,
+    1
+  ],
+  "lapis": [
+    2,
+    3,
+    4
+  ],
+  "result": "minecraft:soul_speed"
+}

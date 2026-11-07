@@ -1,0 +1,19 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    2,
+    5
+  ],
+  "ingredient": {
+    "id": "minecraft:string"
+  },
+  "ingredient_cost": [
+    1,
+    2
+  ],
+  "lapis": [
+    1,
+    2
+  ],
+  "result": "minecraft:punch"
+}

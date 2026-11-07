@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    5,
+    8,
+    12
+  ],
+  "ingredient": {
+    "id": "minecraft:fire_charge"
+  },
+  "ingredient_cost": [
+    2,
+    3,
+    4
+  ],
+  "lapis": [
+    3,
+    4,
+    5
+  ],
+  "result": "minecraft:sweeping_edge"
+}

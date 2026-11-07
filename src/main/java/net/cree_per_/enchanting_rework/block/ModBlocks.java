@@ -2,7 +2,7 @@ package net.cree_per_.enchanting_rework.block;
 
 import net.cree_per_.enchanting_rework.EnchantingRework;
 import net.cree_per_.enchanting_rework.block.custom.NewEnchantingTableBlock;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -41,8 +41,8 @@ public class ModBlocks {
     }
 
     public static void registerModBlocks(){
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(fabricItemGroupEntries -> {
-            fabricItemGroupEntries.accept(ModBlocks.NEW_ENCHANTING_TABLE);
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(output -> {
+            output.accept(ModBlocks.NEW_ENCHANTING_TABLE);
         });
     }
 }

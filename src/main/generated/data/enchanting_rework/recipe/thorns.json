@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    8,
+    12,
+    15
+  ],
+  "ingredient": {
+    "id": "minecraft:amethyst_shard"
+  },
+  "ingredient_cost": [
+    1,
+    1,
+    2
+  ],
+  "lapis": [
+    4,
+    5,
+    6
+  ],
+  "result": "minecraft:thorns"
+}

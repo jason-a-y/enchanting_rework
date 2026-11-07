@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    7,
+    12,
+    15
+  ],
+  "ingredient": {
+    "id": "minecraft:wind_charge"
+  },
+  "ingredient_cost": [
+    3,
+    5,
+    7
+  ],
+  "lapis": [
+    3,
+    5,
+    7
+  ],
+  "result": "minecraft:quick_charge"
+}

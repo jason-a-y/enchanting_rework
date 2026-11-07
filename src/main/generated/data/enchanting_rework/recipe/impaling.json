@@ -1,0 +1,28 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    0,
+    2,
+    4,
+    6,
+    8
+  ],
+  "ingredient": {
+    "id": "minecraft:prismarine_shard"
+  },
+  "ingredient_cost": [
+    2,
+    2,
+    2,
+    3,
+    3
+  ],
+  "lapis": [
+    1,
+    2,
+    2,
+    3,
+    3
+  ],
+  "result": "minecraft:impaling"
+}

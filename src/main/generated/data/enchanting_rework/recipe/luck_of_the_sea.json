@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    1,
+    4,
+    7
+  ],
+  "ingredient": {
+    "id": "minecraft:tripwire_hook"
+  },
+  "ingredient_cost": [
+    1,
+    1,
+    2
+  ],
+  "lapis": [
+    1,
+    2,
+    3
+  ],
+  "result": "minecraft:luck_of_the_sea"
+}

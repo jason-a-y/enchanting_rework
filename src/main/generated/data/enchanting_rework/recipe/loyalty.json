@@ -1,0 +1,22 @@
+{
+  "type": "enchanting_rework:enchantment",
+  "bookshelves": [
+    9,
+    12,
+    15
+  ],
+  "ingredient": {
+    "id": "minecraft:ender_eye"
+  },
+  "ingredient_cost": [
+    1,
+    1,
+    1
+  ],
+  "lapis": [
+    3,
+    5,
+    7
+  ],
+  "result": "minecraft:loyalty"
+}
