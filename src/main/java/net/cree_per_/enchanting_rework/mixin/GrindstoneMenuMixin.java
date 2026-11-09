@@ -4,6 +4,7 @@ import net.cree_per_.enchanting_rework.recipe.EnchantmentRecipe;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -78,7 +79,7 @@ public abstract class GrindstoneMenuMixin {
     @Unique
     private int recipeLapisRefund(ItemStack stack){
         int lapisCount = 0;
-        if (!stack.isEmpty() && (stack.isEnchanted() || stack.is(Items.ENCHANTED_BOOK))){
+        if (!stack.isEmpty() && !stack.is(ItemTags.PIGLIN_LOVED) && (stack.isEnchanted() || stack.is(Items.ENCHANTED_BOOK))){
             ItemEnchantments.Mutable builder = new ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(stack));
             for (Holder<Enchantment> enchantment : builder.keySet()){
                 if (enchantment.is(EnchantmentTags.CURSE))
