@@ -7,7 +7,7 @@ import net.cree_per_.enchanting_rework.block.entity.custom.NewEnchantingTableBlo
 import net.cree_per_.enchanting_rework.recipe.EnchantmentRecipeInput;
 import net.cree_per_.enchanting_rework.recipe.ModRecipes;
 import net.cree_per_.enchanting_rework.screen.ModScreenHandlers;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;

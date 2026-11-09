@@ -1,8 +1,10 @@
 package net.cree_per_.enchanting_rework.datagen;
 
+import net.cree_per_.enchanting_rework.block.ModBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.references.ItemIds;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import java.util.concurrent.CompletableFuture;
@@ -14,7 +16,7 @@ public class ModItemTagProvider extends FabricTagsProvider.ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
-        valueLookupBuilder(ItemTags.SHARP_WEAPON_ENCHANTABLE)
-                .add(Items.TRIDENT);
+        tag(ItemTags.SHARP_WEAPON_ENCHANTABLE)
+                .add(ItemIds.TRIDENT);
     }
 }

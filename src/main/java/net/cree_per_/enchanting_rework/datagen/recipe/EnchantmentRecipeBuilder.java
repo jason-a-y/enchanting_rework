@@ -1,7 +1,7 @@
 package net.cree_per_.enchanting_rework.datagen.recipe;
 
 import net.cree_per_.enchanting_rework.recipe.EnchantmentRecipe;
-import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;

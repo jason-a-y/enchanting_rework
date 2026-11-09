@@ -45,4 +45,12 @@ public class ModBlocks {
             output.accept(ModBlocks.NEW_ENCHANTING_TABLE);
         });
     }
+
+    public static ResourceKey<Item> getItemResourceKey(Item item){
+        return BuiltInRegistries.ITEM.getResourceKey(item).get();
+    }
+
+    public static ResourceKey<Block> getBlockResourceKey(Block block){
+        return BuiltInRegistries.BLOCK.getResourceKey(block).get();
+    }
 }
