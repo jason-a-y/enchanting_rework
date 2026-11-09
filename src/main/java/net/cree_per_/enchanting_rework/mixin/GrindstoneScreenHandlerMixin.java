@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.EnchantmentTags;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.screen.GrindstoneScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
@@ -78,7 +79,7 @@ public abstract class GrindstoneScreenHandlerMixin {
     @Unique
     private int recipeLapisRefund(ItemStack stack){
         int lapisCount = 0;
-        if (!stack.isEmpty() && (stack.hasEnchantments() || stack.isOf(Items.ENCHANTED_BOOK))){
+        if (!stack.isEmpty() && stack.isIn(ItemTags.PIGLIN_LOVED) && (stack.hasEnchantments() || stack.isOf(Items.ENCHANTED_BOOK))){
             ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(EnchantmentHelper.getEnchantments(stack));
             for (RegistryEntry<Enchantment> enchantment : builder.getEnchantments()){
                 if (enchantment.isIn(EnchantmentTags.CURSE))
