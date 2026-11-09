@@ -19,6 +19,6 @@ public abstract class ToolMaterialMixin {
 
     static {
         GOLD = new ToolMaterial(BlockTags.INCORRECT_FOR_GOLD_TOOL, 212, 12.0F, 2.0F, 22, ItemTags.GOLD_TOOL_MATERIALS);
-        NETHERITE = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 40620, 10.0F, 4.0F, 15, ItemTags.NETHERITE_TOOL_MATERIALS);
+        NETHERITE = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 4062, 10.0F, 4.0F, 15, ItemTags.NETHERITE_TOOL_MATERIALS);
     }
 }
