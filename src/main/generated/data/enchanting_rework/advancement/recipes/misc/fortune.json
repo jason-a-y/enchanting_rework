@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:fortune"
+        "recipes": "enchanting_rework:fortune"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

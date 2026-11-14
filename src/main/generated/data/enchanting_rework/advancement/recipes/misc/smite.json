@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:smite"
+        "recipes": "enchanting_rework:smite"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:blast_protection"
+        "recipes": "enchanting_rework:blast_protection"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

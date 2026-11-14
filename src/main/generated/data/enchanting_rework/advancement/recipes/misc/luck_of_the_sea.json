@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:luck_of_the_sea"
+        "recipes": "enchanting_rework:luck_of_the_sea"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

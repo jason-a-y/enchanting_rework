@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:protection"
+        "recipes": "enchanting_rework:protection"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

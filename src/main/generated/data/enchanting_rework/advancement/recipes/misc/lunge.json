@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:lunge"
+        "recipes": "enchanting_rework:lunge"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

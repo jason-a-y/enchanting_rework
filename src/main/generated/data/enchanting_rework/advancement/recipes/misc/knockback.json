@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:knockback"
+        "recipes": "enchanting_rework:knockback"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:breach"
+        "recipes": "enchanting_rework:breach"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

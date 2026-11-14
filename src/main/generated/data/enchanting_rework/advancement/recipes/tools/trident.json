@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:trident"
+        "recipes": "enchanting_rework:trident"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

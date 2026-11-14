@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:efficiency"
+        "recipes": "enchanting_rework:efficiency"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

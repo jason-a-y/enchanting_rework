@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:wind_burst"
+        "recipes": "enchanting_rework:wind_burst"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

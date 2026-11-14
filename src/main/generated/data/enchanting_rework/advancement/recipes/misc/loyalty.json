@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:loyalty"
+        "recipes": "enchanting_rework:loyalty"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

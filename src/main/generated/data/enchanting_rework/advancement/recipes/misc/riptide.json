@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:riptide"
+        "recipes": "enchanting_rework:riptide"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:quick_charge"
+        "recipes": "enchanting_rework:quick_charge"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:mending"
+        "recipes": "enchanting_rework:mending"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

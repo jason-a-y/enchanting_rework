@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:vanishing_curse"
+        "recipes": "enchanting_rework:vanishing_curse"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

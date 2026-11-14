@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:channeling"
+        "recipes": "enchanting_rework:channeling"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

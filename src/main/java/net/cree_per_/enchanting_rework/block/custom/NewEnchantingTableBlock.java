@@ -1,6 +1,5 @@
 package net.cree_per_.enchanting_rework.block.custom;
 
-import com.mojang.serialization.MapCodec;
 import net.cree_per_.enchanting_rework.block.entity.ModBlockEntities;
 import net.cree_per_.enchanting_rework.block.entity.custom.NewEnchantingTableBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -33,8 +32,6 @@ import java.util.List;
 public class NewEnchantingTableBlock extends BaseEntityBlock implements EntityBlock {
     private static final VoxelShape SHAPE
             = Block.column(16.0, 0.0, 12.0);
-    public static final MapCodec<NewEnchantingTableBlock> CODEC
-            = NewEnchantingTableBlock.simpleCodec(NewEnchantingTableBlock::new);
 
     // bookshelves
     public static final List<BlockPos> POWER_PROVIDER_OFFSETS = BlockPos.betweenClosedStream(-2, 0, -2, 2, 1, 2)
@@ -76,11 +73,6 @@ public class NewEnchantingTableBlock extends BaseEntityBlock implements EntityBl
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return SHAPE;
-    }
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

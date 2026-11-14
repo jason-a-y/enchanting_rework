@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:density"
+        "recipes": "enchanting_rework:density"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

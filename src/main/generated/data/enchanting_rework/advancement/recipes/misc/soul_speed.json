@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:soul_speed"
+        "recipes": "enchanting_rework:soul_speed"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

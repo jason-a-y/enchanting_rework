@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:looting"
+        "recipes": "enchanting_rework:looting"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

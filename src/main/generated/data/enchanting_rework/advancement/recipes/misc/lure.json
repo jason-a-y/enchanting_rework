@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:lure"
+        "recipes": "enchanting_rework:lure"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

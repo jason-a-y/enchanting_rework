@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:aqua_affinity"
+        "recipes": "enchanting_rework:aqua_affinity"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

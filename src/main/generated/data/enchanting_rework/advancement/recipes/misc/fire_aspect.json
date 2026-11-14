@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:fire_aspect"
+        "recipes": "enchanting_rework:fire_aspect"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

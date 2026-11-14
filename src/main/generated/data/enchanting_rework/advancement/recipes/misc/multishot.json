@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:multishot"
+        "recipes": "enchanting_rework:multishot"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

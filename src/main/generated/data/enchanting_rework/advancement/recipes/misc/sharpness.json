@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:sharpness"
+        "recipes": "enchanting_rework:sharpness"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

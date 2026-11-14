@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:thorns"
+        "recipes": "enchanting_rework:thorns"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -69,15 +69,15 @@ public class NewEnchantingTableBlockEntityRenderer implements BlockEntityRendere
     public void submit(
             EnchantTableRenderState state,
             PoseStack matrixStack,
-            SubmitNodeCollector orderedRenderCommandQueue,
-            CameraRenderState cameraRenderState
+            SubmitNodeCollector submitNodeCollector,
+            CameraRenderState camera
     ) {
         matrixStack.pushPose();
         matrixStack.translate(0.5F, 0.75F, 0.5F);
         matrixStack.translate(0.0F, 0.1F + Mth.sin(state.time * 0.1F) * 0.01F, 0.0F);
         float f = state.yRot;
-        matrixStack.mulPose(Axis.YP.rotation(-f));
-        matrixStack.mulPose(Axis.ZP.rotationDegrees(80.0F));
+        matrixStack.rotate(Axis.YP.rotation(-f));
+        matrixStack.rotate(Axis.ZP.rotationDegrees(80.0F));
         float g = Mth.frac(state.flip + 0.25F) * 1.6F - 0.3F;
         float h = Mth.frac(state.flip + 0.75F) * 1.6F - 0.3F;
         BookModel.State bookModelState = new BookModel.State(
@@ -85,17 +85,16 @@ public class NewEnchantingTableBlockEntityRenderer implements BlockEntityRendere
                 Mth.clamp(g, 0.0F, 1.0F),
                 Mth.clamp(h, 0.0F, 1.0F)
         );
-        orderedRenderCommandQueue.submitModel(
+        submitNodeCollector.submitModel(
                 this.book,
                 bookModelState,
                 matrixStack,
-                BOOK_TEXTURE.renderType(RenderTypes::entitySolid),
                 state.lightCoords,
                 OverlayTexture.NO_OVERLAY,
                 -1,
-                this.spriteHolder.get(BOOK_TEXTURE),
-                0,
-                state.breakProgress
+                BOOK_TEXTURE,
+                this.spriteHolder,
+                0
         );
         matrixStack.popPose();
     }

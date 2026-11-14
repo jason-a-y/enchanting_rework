@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:feather_falling"
+        "recipes": "enchanting_rework:feather_falling"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

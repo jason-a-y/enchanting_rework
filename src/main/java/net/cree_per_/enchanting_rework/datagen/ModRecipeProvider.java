@@ -3,19 +3,19 @@ package net.cree_per_.enchanting_rework.datagen;
 import net.cree_per_.enchanting_rework.datagen.recipe.EnchantmentRecipeBuilder;
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.block.Blocks;
-import net.cree_per_.enchanting_rework.block.ModBlocks;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,20 +25,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
     }
 
     @Override
-    protected RecipeProvider createRecipeProvider(HolderLookup.Provider wrapperLookup, RecipeOutput recipeExporter) {
-        return new RecipeProvider(wrapperLookup, recipeExporter) {
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+        return new RecipeProvider(recipes, advancements) {
             @Override
             public void buildRecipes() {
-                shaped(RecipeCategory.DECORATIONS, ModBlocks.NEW_ENCHANTING_TABLE)
-                        .define('B', Items.BOOK)
-                        .define('#', Blocks.OBSIDIAN)
-                        .define('D', Items.DIAMOND)
-                        .pattern(" B ")
-                        .pattern("D#D")
-                        .pattern("###")
-                        .unlockedBy("has_obsidian", this.has(Blocks.OBSIDIAN))
-                        .save(this.output);
-
                 shaped(RecipeCategory.TOOLS, Items.TRIDENT)
                         .define('H', Items.HEART_OF_THE_SEA)
                         .define('S', Items.PRISMARINE_SHARD)
@@ -53,7 +43,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 oreSmelting(List.of(Items.GILDED_BLACKSTONE), RecipeCategory.MISC, CookingBookCategory.BLOCKS, Items.GOLD_INGOT, 1.0f, 200, "gold_ingot");
                 oreBlasting(List.of(Items.GILDED_BLACKSTONE), RecipeCategory.MISC, CookingBookCategory.BLOCKS, Items.GOLD_INGOT, 1.0f, 100, "gold_ingot");
 
-                HolderLookup.RegistryLookup<Enchantment> lookup = wrapperLookup.lookupOrThrow(Registries.ENCHANTMENT);
+                HolderLookup.RegistryLookup<Enchantment> lookup = registries.lookupOrThrow(Registries.ENCHANTMENT);
 
                 build(lookup, Items.PRISMARINE_CRYSTALS, List.of(2), List.of(1), Enchantments.AQUA_AFFINITY, List.of(1));
                 build(lookup, Items.STICK, List.of(1,1,2,2,3), List.of(1,1,2,2,3), Enchantments.BANE_OF_ARTHROPODS, List.of(0,2,4,6,8));

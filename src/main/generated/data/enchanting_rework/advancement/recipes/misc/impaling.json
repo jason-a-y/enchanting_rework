@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:impaling"
+        "recipes": "enchanting_rework:impaling"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

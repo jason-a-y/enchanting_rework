@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:punch"
+        "recipes": "enchanting_rework:punch"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

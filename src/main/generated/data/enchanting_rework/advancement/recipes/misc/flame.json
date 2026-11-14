@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:flame"
+        "recipes": "enchanting_rework:flame"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

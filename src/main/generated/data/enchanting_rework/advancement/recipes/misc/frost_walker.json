@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:frost_walker"
+        "recipes": "enchanting_rework:frost_walker"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:sweeping_edge"
+        "recipes": "enchanting_rework:sweeping_edge"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

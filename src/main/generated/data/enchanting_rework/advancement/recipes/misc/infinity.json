@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:infinity"
+        "recipes": "enchanting_rework:infinity"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

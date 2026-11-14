@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "enchanting_rework:silk_touch"
+        "recipes": "enchanting_rework:silk_touch"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
