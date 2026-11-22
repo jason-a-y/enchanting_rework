@@ -15,6 +15,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.RecipeEntry;
@@ -130,7 +131,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
                 }
             } else {
                 if (originalStack.isEnchantable() || originalStack.isDamageable() || originalStack.isOf(Items.ENCHANTED_BOOK)){
-                    if (this.slots.get(TOOL_SLOT).hasStack() || !this.slots.get(TOOL_SLOT).canInsert(originalStack)) {
+                    if (!this.slots.get(TOOL_SLOT).canInsert(originalStack)) {
                         return ItemStack.EMPTY;
                     }
 
@@ -138,7 +139,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
                     originalStack.decrement(1);
                     this.slots.get(TOOL_SLOT).setStack(itemStack);
                 } else {
-                    if (this.slots.get(INGREDIENT_SLOT).hasStack() || !this.slots.get(INGREDIENT_SLOT).canInsert(originalStack)) {
+                    if (!this.slots.get(INGREDIENT_SLOT).canInsert(originalStack)) {
                         return ItemStack.EMPTY;
                     } else if (!this.insertItem(originalStack, INGREDIENT_SLOT, INGREDIENT_SLOT + 1, true)) {
                         return ItemStack.EMPTY;
@@ -216,8 +217,6 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
             inventory.markDirty();
             return true;
         } else if (id >= 1 && id < getValidEnchantments().size() + 1) {
-            quickMove(player, INGREDIENT_SLOT);
-            quickMove(player, LAPIS_SLOT);
             // enchantment selector
             // if a button is pressed, automatically move ingredients into their corresponding slots
 
@@ -228,9 +227,12 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
                 // get the required ingredients for the selected enchantment
                 // get recipe
                 EnchantmentRecipe recipe = recipeFromEnchantmentId(selectedEnchantment);
+                Item ingredient = recipe.inputItem().getItem();
 
-                if (recipe == null){
-                    return false;
+                ItemStack itemInIngredientSlot = inventory.getStack(INGREDIENT_SLOT);
+
+                if (!itemInIngredientSlot.isOf(ingredient)){
+                    quickMove(player, INGREDIENT_SLOT);
                 }
 
                 // amount needed
@@ -242,7 +244,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
                     if (slot.hasStack()){
                         ItemStack originalStack = slot.getStack();
 
-                        // to do: move ingredients into their corresponding slots
+                        // move ingredients into their corresponding slots
                         if (originalStack.isOf(Items.LAPIS_LAZULI)){
                             if (lapisCost > 0){
                                 int originalStackCount = originalStack.getCount();
@@ -261,7 +263,7 @@ public class NewEnchantmentScreenHandler extends ScreenHandler {
                                 }
                             }
 
-                        } else if (originalStack.isOf(recipe.inputItem().getItem())){
+                        } else if (originalStack.isOf(ingredient)){
                             if (ingredientCost > 0){
                                 int originalStackCount = originalStack.getCount();
                                 if (ingredientCost >= originalStackCount){
