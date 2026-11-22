@@ -26,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -131,7 +132,7 @@ public class NewEnchantmentMenu extends AbstractContainerMenu {
                 }
             } else {
                 if (originalStack.isEnchantable() || originalStack.isDamageableItem() || originalStack.is(Items.ENCHANTED_BOOK)){
-                    if (this.slots.get(TOOL_SLOT).hasItem() || !this.slots.get(TOOL_SLOT).mayPlace(originalStack)) {
+                    if (!this.slots.get(TOOL_SLOT).mayPlace(originalStack)) {
                         return ItemStack.EMPTY;
                     }
 
@@ -139,7 +140,7 @@ public class NewEnchantmentMenu extends AbstractContainerMenu {
                     originalStack.shrink(1);
                     this.slots.get(TOOL_SLOT).setByPlayer(itemStack);
                 } else {
-                    if (this.slots.get(INGREDIENT_SLOT).hasItem() || !this.slots.get(INGREDIENT_SLOT).mayPlace(originalStack)) {
+                    if (!this.slots.get(INGREDIENT_SLOT).mayPlace(originalStack)) {
                         return ItemStack.EMPTY;
                     } else if (!this.moveItemStackTo(originalStack, INGREDIENT_SLOT, INGREDIENT_SLOT + 1, true)) {
                         return ItemStack.EMPTY;
@@ -217,8 +218,6 @@ public class NewEnchantmentMenu extends AbstractContainerMenu {
             inventory.setChanged();
             return true;
         } else if (id >= 1 && id < getValidEnchantments().size() + 1) {
-            quickMoveStack(player, INGREDIENT_SLOT);
-            quickMoveStack(player, LAPIS_SLOT);
             // enchantment selector
             // if a button is pressed, automatically move ingredients into their corresponding slots
 
@@ -229,9 +228,12 @@ public class NewEnchantmentMenu extends AbstractContainerMenu {
                 // get the required ingredients for the selected enchantment
                 // get recipe
                 EnchantmentRecipe recipe = recipeFromEnchantmentId(selectedEnchantment);
+                Item ingredient = recipe.inputItem().create().getItem();
 
-                if (recipe == null){
-                    return false;
+                ItemStack itemInIngredientSlot = inventory.getItem(INGREDIENT_SLOT);
+
+                if (!itemInIngredientSlot.is(ingredient)){
+                    quickMoveStack(player, INGREDIENT_SLOT);
                 }
 
                 // amount needed
@@ -243,7 +245,7 @@ public class NewEnchantmentMenu extends AbstractContainerMenu {
                     if (slot.hasItem()){
                         ItemStack originalStack = slot.getItem();
 
-                        // to do: move ingredients into their corresponding slots
+                        // move ingredients into their corresponding slots
                         if (originalStack.is(Items.LAPIS_LAZULI)){
                             if (lapisCost > 0){
                                 int originalStackCount = originalStack.getCount();
@@ -262,7 +264,7 @@ public class NewEnchantmentMenu extends AbstractContainerMenu {
                                 }
                             }
 
-                        } else if (originalStack.is(recipe.inputItem().create().getItem())){
+                        } else if (originalStack.is(ingredient)){
                             if (ingredientCost > 0){
                                 int originalStackCount = originalStack.getCount();
                                 if (ingredientCost >= originalStackCount){
